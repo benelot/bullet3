@@ -63,19 +63,19 @@ static double speeds[] = {
 	SimulationSpeeds::CENTUPLE_SPEED,	SimulationSpeeds::QUINCENTUPLE_SPEED,
 	SimulationSpeeds::MILLITUPLE_SPEED};
 
-static btScalar gSolverIterations = 10; // default number of solver iterations for the iterative solvers
+static btScalar gSolverIterations = 10;																			// default number of solver iterations for the iterative solvers
 
-static bool gIsHeadless = false; // demo runs with graphics by default
+static bool gIsHeadless = false;																				// demo runs with graphics by default
 
-static bool gChangeErpCfm = false; // flag to make recalculation of ERP/CFM
+static bool gChangeErpCfm = false;																				// flag to make recalculation of ERP/CFM
 
-static int gMinSpeed = SimulationSpeeds::PAUSE; // the minimum simulation speed
+static int gMinSpeed = SimulationSpeeds::PAUSE;																	// the minimum simulation speed
 
-static int gMaxSpeed = SimulationSpeeds::MAX_SPEED; // the maximum simulation speed
+static int gMaxSpeed = SimulationSpeeds::MAX_SPEED;																// the maximum simulation speed
 
-static bool gMaximumSpeed = false; // the demo does not try to achieve maximum stepping speed by default
+static bool gMaximumSpeed = false;																				// the demo does not try to achieve maximum stepping speed by default
 
-static bool gInterpolate = false; // the demo does not use any bullet interpolated physics substeps
+static bool gInterpolate = false;																				// the demo does not use any bullet interpolated physics substeps
 
 static bool useSplitImpulse = true; // split impulse fixes issues with restitution in Baumgarte stabilization
 // http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=7117&p=24631&hilit=Baumgarte#p24631
@@ -106,7 +106,7 @@ static char FSSOLVER[] = "FeatherStone Solver";
 
 static const char* solverTypes[NUM_SOLVERS];
 
-static SolverEnumType SOLVER_TYPE = SEQUENTIALIMPULSESOLVER; // You can switch the solver here
+static SolverEnumType SOLVER_TYPE = SEQUENTIALIMPULSESOLVER;													// You can switch the default solver here
 
 //TODO:s===
 //TODO: Give specific explanations about solver values
@@ -115,19 +115,19 @@ static SolverEnumType SOLVER_TYPE = SEQUENTIALIMPULSESOLVER; // You can switch t
  * Step size of the bullet physics simulator (solverAccuracy). Accuracy versus speed.
  */
 // Choose an appropriate number of steps per second for your needs
-static btScalar gPhysicsStepsPerSecond = 60.0f; // Default number of steps
-//static btScalar gPhysicsStepsPerSecond = 120.0f; // Double steps for more accuracy
-//static btScalar gPhysicsStepsPerSecond = 240.0f; // For high accuracy
-//static btScalar gPhysicsStepsPerSecond = 1000.0f; // Very high accuracy
+static btScalar gPhysicsStepsPerSecond = 60.0f;																	// Default number of steps
+//static btScalar gPhysicsStepsPerSecond = 120.0f;																// Double steps for more accuracy
+//static btScalar gPhysicsStepsPerSecond = 240.0f;																// For high accuracy
+//static btScalar gPhysicsStepsPerSecond = 1000.0f;																// Very high accuracy
 
 // appropriate inverses for seconds and milliseconds
-static double fixedPhysicsStepSizeSec = 1.0f / gPhysicsStepsPerSecond; // steps size in seconds
-static double fixedPhysicsStepSizeMilli = 1000.0f / gPhysicsStepsPerSecond; // step size in milliseconds
+static double fixedPhysicsStepSizeSec = 1.0f / gPhysicsStepsPerSecond;											// steps size in seconds
+static double fixedPhysicsStepSizeMilli = 1000.0f / gPhysicsStepsPerSecond;										// step size in milliseconds
 
-static btScalar gApplicationFrequency = 60.0f; // number of internal application ticks per second
-static int gApplicationTick = 1000.0f / gApplicationFrequency; //ms
+static btScalar gApplicationFrequency = 60.0f;																	// number of internal application ticks per second
+static int gApplicationTick = 1000.0f / gApplicationFrequency;													// ms
 
-static btScalar gFramesPerSecond = 30.0f; // number of frames per second
+static btScalar gFramesPerSecond = 30.0f;																		// number of frames per second
 
 static btScalar gERPSpringK = 10;
 static btScalar gERPDamperC = 1;
@@ -138,7 +138,10 @@ static btScalar gCFMSingularityAvoidance = 0;
 
 //GUI related parameter changing helpers
 
-inline void twxChangePhysicsStepsPerSecond(float physicsStepsPerSecond, void*) { // function to change simulation physics steps per second
+/*
+Change simulation physics steps per second.
+*/
+inline void twxChangePhysicsStepsPerSecond(float physicsStepsPerSecond, void*) {
 	gPhysicsStepsPerSecond = physicsStepsPerSecond;
 }
 
@@ -146,11 +149,17 @@ inline void twxChangeFPS(float framesPerSecond, void*) {
 	gFramesPerSecond = framesPerSecond;
 }
 
-inline void twxChangeERPCFM(float notUsed, void*) { // function to change ERP/CFM appropriately
+/*
+Change ERP/CFM appropriately.
+*/
+inline void twxChangeERPCFM(float notUsed, void*) {
 	gChangeErpCfm = true;
 }
 
-inline void changeSolver(int comboboxId, const char* item, void* userPointer) { // function to change the solver
+/*
+Change the solver type.
+*/
+inline void changeSolver(int comboboxId, const char* item, void* userPointer) {
 	for(int i = 0; i < NUM_SOLVERS;i++){
 		if(strcmp(solverTypes[i], item) == 0){ // if the strings are equal
 			SOLVER_TYPE = ((SolverEnumType)i);
@@ -161,13 +170,18 @@ inline void changeSolver(int comboboxId, const char* item, void* userPointer) { 
 	b3Printf("No Change");
 }
 
-
-inline void twxChangeSolverIterations(float notUsed, void* userPtr) { // change the solver iterations
+/*
+change the solver iterations
+*/
+inline void twxChangeSolverIterations(float notUsed, void* userPtr) {
 
 
 }
 
-inline void clampToCustomSpeedNotches(float speed, void*) { // function to clamp to custom speed notches
+/*
+clamp to custom speed notches
+*/
+inline void clampToCustomSpeedNotches(float speed, void*) {
 	double minSpeed = 0;
 	double minSpeedDist = SimulationSpeeds::MAX_SPEED;
 	for (int i = 0; i < SimulationSpeeds::NUM_SPEEDS; i++) {
@@ -181,27 +195,36 @@ inline void clampToCustomSpeedNotches(float speed, void*) { // function to clamp
 	gSimulationSpeed = minSpeed;
 }
 
-inline void switchInterpolated(int buttonId, bool buttonState, void* userPointer){ // toggle if interpolation steps are taken
+/*
+Toggle if interpolation steps are taken
+*/
+inline void switchInterpolated(int buttonId, bool buttonState, void* userPointer){
 	gInterpolate=!gInterpolate;
 //	b3Printf("Interpolate substeps %s", gInterpolate?"on":"off");
 }
 
-inline void switchHeadless(int buttonId, bool buttonState, void* userPointer){ // toggle if the demo should run headless
+/*
+Toggle if the demo should run headlessly
+*/
+inline void switchHeadless(int buttonId, bool buttonState, void* userPointer){
 	gIsHeadless=!gIsHeadless;
 //	b3Printf("Run headless %s", gIsHeadless?"on":"off");
 }
 
-inline void switchMaximumSpeed(int buttonId, bool buttonState, void* userPointer){ // toggle it the demo should run as fast as possible
+/*
+Toggle it the demo should run as fast as possible
+*/
+inline void switchMaximumSpeed(int buttonId, bool buttonState, void* userPointer){
 //	b3Printf("Run maximum speed %s", gMaximumSpeed?"on":"off");
 }
 
-inline void setApplicationTick(float frequency, void*){ // set internal application tick
+/*
+Set internal application tick
+*/
+inline void setApplicationTick(float frequency, void*){
 	gApplicationTick = 1000.0f/frequency;
 }
 
-/**
- * @link: Gaffer on Games - Fix your timestep: http://gafferongames.com/game-physics/fix-your-timestep/
- */
 struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 	NN3DWalkersTimeWarpBase(struct GUIHelperInterface* helper):
@@ -212,19 +235,19 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		mIsHeadless(false){
 
 		 // main frame timer initialization
-		 mApplicationStart = mLoopTimer.getTimeMilliseconds(); /**!< Initialize when the application started running */
-		 mInputClock = mApplicationStart; /**!< Initialize the last time the input was updated */
+		 mApplicationStart = mLoopTimer.getTimeMilliseconds();														/**!< Initialize when the application started running */
+		 mInputClock = mApplicationStart;																			/**!< Initialize the last time the input was updated */
 		 mPreviousModelIteration = mApplicationStart;
 		 mThisModelIteration = mApplicationStart;
-		 mApplicationRuntime = mThisModelIteration - mApplicationStart; /**!< Initialize the application runtime */
+		 mApplicationRuntime = mThisModelIteration - mApplicationStart;												/**!< Initialize the application runtime */
 
 		 // sub frame time initializations
-		 mGraphicsStart = mApplicationStart; /** !< Initialize the last graphics start */
-		 mModelStart = mApplicationStart; /** !< Initialize the last model start */
-		 mInputStart = mApplicationStart; /** !< Initialize the last input start */
+		 mGraphicsStart = mApplicationStart;																		/** !< Initialize the last graphics start */
+		 mModelStart = mApplicationStart;																			/** !< Initialize the last model start */
+		 mInputStart = mApplicationStart;																			/** !< Initialize the last input start */
 
-		 mPhysicsStepStart = mApplicationStart; /**!< Initialize the physics step start */
-		 mPhysicsStepEnd = mApplicationStart; /**!< Initialize the physics step end */
+		 mPhysicsStepStart = mApplicationStart;																		/**!< Initialize the physics step start */
+		 mPhysicsStepEnd = mApplicationStart;																		/**!< Initialize the physics step end */
 
 		 //durations
 		 mLastGraphicsTick = 0;
@@ -236,13 +259,13 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		 mModelAccumulator = 0;
 		 mFrameTime = 0;
 
-		 fpsTimeStamp = mLoopTimer.getTimeMilliseconds(); // to time the fps
+		 fpsTimeStamp = mLoopTimer.getTimeMilliseconds();															// to time the fps
 		 fpsStep = 1000.0f/gFramesPerSecond;
 
 		 // performance measurements for this demo
 		 performanceTimestamp = 0;
-		 performedTime = 0; // time the physics steps consumed
-		 speedUpPrintTimeStamp = mLoopTimer.getTimeSeconds(); // timer to print the speed up periodically
+		 performedTime = 0;																							// time the physics steps consumed
+		 speedUpPrintTimeStamp = mLoopTimer.getTimeSeconds();														// timer to print the actual speed up periodically
 		 mLoopTimer.reset();
 	 }
 
@@ -250,22 +273,24 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 	}
 
+	/*
+	Initialize the demo.
+	*/
+	void initPhysics(){
 
-	void initPhysics(){ // initialize the demo
+		setupBasicParamInterface();																					// setup adjustable sliders and buttons for parameters
 
-		setupBasicParamInterface(); // setup adjustable sliders and buttons for parameters
+		m_guiHelper->setUpAxis(1);																					// Set Y axis as Up axis
 
-		m_guiHelper->setUpAxis(1); // Set Y axis as Up axis
-
-		createEmptyDynamicsWorld(); // create an empty dynamic world
+		createEmptyDynamicsWorld();																					// create an empty dynamic world
 
 		m_guiHelper->autogenerateGraphicsObjects(m_dynamicsWorld);
 	}
 
-	void setupBasicParamInterface(){ // setup the adjustable sliders and button for parameters
+	void setupBasicParamInterface(){																				// setup the adjustable sliders and button for parameters
 
-		{ // create a slider to adjust the simulation speed
-			// Force increase the simulation speed to run the simulation with the same accuracy but a higher speed
+		{																											// create a slider to adjust the simulation speed
+																													// Force increase the simulation speed to run the simulation with the same accuracy but a higher speed
 			SliderParams slider("Simulation speed",
 				&gSimulationSpeed);
 			slider.m_minVal = gMinSpeed;
@@ -277,8 +302,8 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a button to switch to headless simulation
-			// This turns off the graphics update and therefore results in more time for the model update
+		{																											// create a button to switch to headless simulation
+																													// This turns off the graphics update and therefore results in more time for the model update
 			ButtonParams button("Run headless",0,true);
 			button.m_callback = switchHeadless;
 			if (m_guiHelper->getParameterInterface())
@@ -288,8 +313,8 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 
 
-		{ // create a button to switch to maximum speed simulation (fully deterministic)
-			// Interesting to test the maximal achievable speed on this hardware
+		{																											// create a button to switch to maximum speed simulation (fully deterministic)
+																													// Interesting to test the maximal achievable speed on this hardware
 			ButtonParams button("Run maximum speed",0,true);
 			button.m_callback = switchMaximumSpeed;
 			if (m_guiHelper->getParameterInterface())
@@ -299,8 +324,8 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 
 
-		{ // create a button to switch bullet to perform interpolated substeps to speed up simulation
-			// generally, interpolated steps are a good speed-up and should only be avoided if higher accuracy is needed (research purposes etc.)
+		{																											// create a button to switch bullet to perform interpolated substeps to speed up simulation
+																													// generally, interpolated steps are a good speed-up and should only be avoided if higher accuracy is needed (research purposes etc.)
 			ButtonParams button("Perform interpolated substeps",0,true);
 			button.m_callback = switchInterpolated;
 			if (m_guiHelper->getParameterInterface())
@@ -319,7 +344,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		solverTypes[4] = SolverType::LEMKESOLVER;
 		solverTypes[5] = SolverType::FSSOLVER;
 
-		{
+		{																											// create a combobox to select the type of physics solver to be used
 			ComboBoxParams comboParams;
 			comboParams.m_comboboxId = 0;
 			comboParams.m_numItems = NUM_SOLVERS;
@@ -330,10 +355,10 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 			m_guiHelper->getParameterInterface()->registerComboBox(comboParams);
 		}
 
-		{ // create a slider to adjust the number of internal application ticks
-			// The set application tick should contain enough time to perform a full cycle of model update (physics and input)
-			// and view update (graphics) with average application load. The graphics and input update determine the remaining time
-			// for the physics update
+		{																											// create a slider to adjust the number of internal application ticks
+																													// The set application tick should contain enough time to perform a full cycle of model update (physics and input)
+																													// and view update (graphics) with average application load. The graphics and input update determine the remaining time
+																													// for the physics update
 			SliderParams slider("Application Ticks",
 				&gApplicationFrequency);
 			slider.m_minVal = gMinSpeed;
@@ -345,10 +370,10 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust the number of physics steps per second
-			// The default number of steps is at 60, which is appropriate for most general simulations
-			// For simulations with higher complexity or if you experience undesired behavior, try increasing the number of steps per second
-			// Alternatively, try increasing the number of solver iterations if you experience jittering constraints due to non-converging solutions
+		{																											// create a slider to adjust the number of physics steps per second
+																													// The default number of steps is at 60, which is appropriate for most general simulations
+																													// For simulations with higher complexity or if you experience undesired behavior, try increasing the number of steps per second
+																													// Alternatively, try increasing the number of solver iterations if you experience jittering constraints due to non-converging solutions
 			SliderParams slider("Physics steps per second", &gPhysicsStepsPerSecond);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 1000;
@@ -359,7 +384,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust the number of frames per second
+		{																											// create a slider to adjust the number of frames per second
 			SliderParams slider("Frames per second", &gFramesPerSecond);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 200;
@@ -370,9 +395,9 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust the number of solver iterations to converge to a solution
-			// more complex simulations might need a higher number of iterations to converge, it also
-			// depends on the type of solver.
+		{																											// create a slider to adjust the number of solver iterations to converge to a solution
+																													// more complex simulations might need a higher number of iterations to converge, it also
+																													// depends on the type of solver.
 			SliderParams slider(
 				"Solver interations",
 				&gSolverIterations);
@@ -387,7 +412,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		// ERP/CFM sliders
 		// Advanced users: Check descriptions of ERP/CFM in BulletUtils.cpp
 
-		{ // create a slider to adjust ERP Spring k constant
+		{																											// create a slider to adjust ERP Spring k constant
 			SliderParams slider("Global ERP Spring k (F=k*x)", &gERPSpringK);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 10;
@@ -398,7 +423,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust ERP damper c constant
+		{																											// create a slider to adjust ERP damper c constant
 			SliderParams slider("Global ERP damper c (F=c*xdot)", &gERPDamperC);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 10;
@@ -409,7 +434,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust CFM Spring k constant
+		{																											// create a slider to adjust CFM Spring k constant
 			SliderParams slider("Global CFM Spring k (F=k*x)", &gCFMSpringK);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 10;
@@ -420,7 +445,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust CFM damper c constant
+		{																											// create a slider to adjust CFM damper c constant
 			SliderParams slider("Global CFM damper c (F=c*xdot)", &gCFMDamperC);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 10;
@@ -431,7 +456,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 					slider);
 		}
 
-		{ // create a slider to adjust CFM damper c constant
+		{																											// create a slider to adjust CFM damper c constant
 			SliderParams slider("Global CFM singularity avoidance", &gCFMSingularityAvoidance);
 			slider.m_minVal = 0;
 			slider.m_maxVal = 10;
@@ -445,13 +470,16 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 	}
 
-	void createEmptyDynamicsWorld(){ // create an empty dynamics worlds according to the chosen settings via statics (top section of code)
+	/*
+	Create an empty dynamics worlds according to the chosen settings via statics (top section of code).
+	*/
+	void createEmptyDynamicsWorld(){
 
-		///collision configuration contains default setup for memory, collision setup
+		// collision configuration contains default setup for memory, collision setup
 		m_collisionConfiguration = new btDefaultCollisionConfiguration();
 		//m_collisionConfiguration->setConvexConvexMultipointIterations();
 
-		///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+		// use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
 		m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 
 		// default broadphase
@@ -505,12 +533,12 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 				m_broadphase, m_solver, m_collisionConfiguration);
 
 			if (SOLVER_TYPE == DANZIGSOLVER || SOLVER_TYPE == GAUSSSEIDELSOLVER) {
-				m_dynamicsWorld->getSolverInfo().m_minimumSolverBatchSize = 1; //for mlcp solver it is better to have a small A matrix
+				m_dynamicsWorld->getSolverInfo().m_minimumSolverBatchSize = 1;											// for mlcp solver it is better to have a small A matrix
 			} else {
-				m_dynamicsWorld->getSolverInfo().m_minimumSolverBatchSize = 128; //for direct solver, it is better to solve multiple objects together, small batches have high overhead
+				m_dynamicsWorld->getSolverInfo().m_minimumSolverBatchSize = 128;										// for direct solver, it is better to solve multiple objects together, small batches have high overhead
 			}
 
-			m_dynamicsWorld->getDispatchInfo().m_useContinuous = true; // set continuous collision
+			m_dynamicsWorld->getDispatchInfo().m_useContinuous = true;													// set continuous collision
 
 		}
 		else{
@@ -522,7 +550,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 		changeERPCFM(); // set appropriate ERP/CFM values according to the spring and damper properties of the constraint
 
-		if (useSplitImpulse) { // If you experience strong repulsion forces in your constraints, it might help to enable the split impulse feature
+		if (useSplitImpulse) {																							// If you experience strong repulsion forces in your constraints, it might help to enable the split impulse feature
 			m_dynamicsWorld->getSolverInfo().m_splitImpulse = 1; //enable split impulse feature
 			//		m_dynamicsWorld->getSolverInfo().m_splitImpulsePenetrationThreshold =
 			//			-0.02;
@@ -535,13 +563,16 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 //				m_dynamicsWorld->getSolverInfo().m_splitImpulseTurnErp);
 		}
 
-		m_dynamicsWorld->getSolverInfo().m_numIterations = gSolverIterations; // set the number of solver iterations for iteration based solvers
+		m_dynamicsWorld->getSolverInfo().m_numIterations = gSolverIterations;											// set the number of solver iterations for iteration based solvers
 
-		m_dynamicsWorld->setGravity(btVector3(0, btScalar(-9.81f), 0)); // set gravity to -9.81
+		m_dynamicsWorld->setGravity(btVector3(0, btScalar(-9.81f), 0));													// set gravity to -9.81
 
 	}
 
-	btScalar calculatePerformedSpeedup() { // calculate performed speedup
+	/*
+	Calculate performed speedup.
+	*/
+	btScalar calculatePerformedSpeedup() {
 		// we calculate the performed speed up
 		btScalar speedUp = ((double)performedTime*1000.0)/((double)(mLoopTimer.getTimeMilliseconds()-performanceTimestamp));
 //		b3Printf("Avg Effective speedup: %f",speedUp);
@@ -551,13 +582,16 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 	}
 
 
+	/*
+	Perform model update.
+	Override this!
+	*/
+	virtual void performModelUpdate(float deltaTime) { }
 
-	virtual void performModelUpdate(float deltaTime) // Override this
-	{
-
-	}
-
-	void stepSimulation(float deltaTime){ // customly step the simulation
+	/*
+	Custom stepping of the simulation.
+	*/
+	void stepSimulation(float deltaTime){
 		do{
 
 			// settings
@@ -590,8 +624,6 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 			//#############
 			// model update - here you perform updates of your model, be it the physics model, the game or simulation state or anything not related to graphics and input
-
-			performModelUpdate(deltaTime);
 			if(mLoopTimer.getTimeSeconds() - speedUpPrintTimeStamp > 1){
 				// on reset, we calculate the performed speed up
 				double speedUp = ((double)performedTime*1000.0)/((double)(mLoopTimer.getTimeMilliseconds()-performanceTimestamp));
@@ -613,6 +645,7 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 			mModelStart = mLoopTimer.getTimeMilliseconds(); /**!< Begin with the model update (in Milliseconds)*/
 			mLastGraphicsTick = mModelStart - mGraphicsStart; /**!< Update graphics timer (in Milliseconds) */
 
+			performModelUpdate(deltaTime); // do stuff here you can no do in a pretick callback
 			if (gMaximumSpeed) { /** If maximum speed is enabled*/
 				performMaxStep();
 			} else { /**!< This mode tries to progress as much time as it is expected from the game loop*/
@@ -651,6 +684,9 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 
 	}
 
+	/*
+	Handle keyboard callbacks.
+	*/
 	virtual bool keyboardCallback(int key, int state)
 	{
 		switch(key)
@@ -709,8 +745,10 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		return CommonRigidBodyBase::keyboardCallback(key,state);
 	}
 
-
-	void changePhysicsStepsPerSecond(float physicsStepsPerSecond){ // change the simulation accuracy
+	/*
+	Change the simulation accuracy.
+	*/
+	void changePhysicsStepsPerSecond(float physicsStepsPerSecond){
 		if (m_dynamicsWorld && physicsStepsPerSecond) {
 			fixedPhysicsStepSizeSec = 1.0f / physicsStepsPerSecond;
 			fixedPhysicsStepSizeMilli = 1000.0f / physicsStepsPerSecond;
@@ -719,14 +757,17 @@ struct NN3DWalkersTimeWarpBase: public CommonRigidBodyBase {
 		}
 	}
 
-	void changeERPCFM(){ // Change ERP/CFM appropriately to the timestep and the ERP/CFM parameters above
+	/*
+	Change ERP/CFM appropriately to the timestep and the ERP/CFM parameters above
+	*/
+	void changeERPCFM(){
 		if(m_dynamicsWorld){
-			m_dynamicsWorld->getSolverInfo().m_erp = b3ERPCFMHelper::getERP( // set the error reduction parameter
+			m_dynamicsWorld->getSolverInfo().m_erp = b3ERPCFMHelper::getERP(						// set the error reduction parameter
 				fixedPhysicsStepSizeSec, // step size per second
 				gERPSpringK, // k of a spring in the equation F = k * x (x:position)
 				gERPDamperC); // k of a damper in the equation F = k * v (v:velocity)
 
-			m_dynamicsWorld->getSolverInfo().m_globalCfm = b3ERPCFMHelper::getCFM( // set the constraint force mixing according to the time step
+			m_dynamicsWorld->getSolverInfo().m_globalCfm = b3ERPCFMHelper::getCFM(					// set the constraint force mixing according to the time step
 				gCFMSingularityAvoidance, // singularity avoidance (if you experience unsolvable constraints, increase this value
 				fixedPhysicsStepSizeSec, // steps size per second
 				gCFMSpringK, // k of a spring in the equation F = k * x (x:position)
