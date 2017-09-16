@@ -1,6 +1,7 @@
 from robot_bases import MJCFBasedRobot
 import numpy as np
 
+
 class InvertedPendulum(MJCFBasedRobot):
 	swingup = False
 	def __init__(self):
@@ -15,37 +16,18 @@ class InvertedPendulum(MJCFBasedRobot):
 		self.j1.set_motor_torque(0)
 
 	def apply_action(self, a):
-		assert( np.isfinite(a).all() )
-		if not np.isfinite(a).all():
-			print("a is inf")
-			a[0] = 0
-		self.slider.set_motor_torque( 100*float(np.clip(a[0], -1, +1)) )
+		assert (np.isfinite(a).all())
+		self.slider.set_motor_torque(100 * float(np.clip(a[0], -1, +1)))
 
 	def calc_state(self):
 		self.theta, theta_dot = self.j1.current_position()
 		x, vx = self.slider.current_position()
-		assert( np.isfinite(x) )
-
-		if not np.isfinite(x):
-			print("x is inf")
-			x = 0
-
-		if not np.isfinite(vx):
-			print("vx is inf")
-			vx = 0
-
-		if not np.isfinite(self.theta):
-			print("theta is inf")
-			self.theta = 0
-
-		if not np.isfinite(theta_dot):
-			print("theta_dot is inf")
-			theta_dot = 0
-
+		assert (np.isfinite(x))
 		return np.array([
 			x, vx,
 			np.cos(self.theta), np.sin(self.theta), theta_dot
-			])
+		])
+
 
 class InvertedPendulumSwingup(InvertedPendulum):
 	swingup = True

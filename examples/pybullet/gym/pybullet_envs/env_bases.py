@@ -30,16 +30,18 @@ class MJCFBaseBulletEnv(gym.Env):
 
 		self.action_space = robot.action_space
 		self.observation_space = robot.observation_space
+
 	def configure(self, args):
 		self.robot.args = args
+
 	def _seed(self, seed=None):
 		self.np_random, seed = gym.utils.seeding.np_random(seed)
 		self.robot.np_random = self.np_random # use the same np_randomizer for robot as for env
 		return [seed]
 
 	def _reset(self):
-		if (self.physicsClientId<0):
-			if (self.isRender):
+		if self.physicsClientId < 0:
+			if self.isRender:
 				self.physicsClientId = p.connect(p.GUI)
 			else:
 				self.physicsClientId = p.connect(p.DIRECT)
@@ -61,7 +63,7 @@ class MJCFBaseBulletEnv(gym.Env):
 		return s
 
 	def _render(self, mode, close):
-		if (mode=="human"):
+		if mode == "human":
 			self.isRender = True
 		if mode != "rgb_array":
 			return np.array([])
@@ -87,7 +89,7 @@ class MJCFBaseBulletEnv(gym.Env):
 		return rgb_array
 
 	def _close(self):
-		if (self.physicsClientId>=0):
+		if self.physicsClientId>=0:
 			p.disconnect(self.physicsClientId)
 			self.physicsClientId = -1
 
