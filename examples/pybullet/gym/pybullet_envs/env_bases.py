@@ -40,11 +40,13 @@ class MJCFBaseBulletEnv(gym.Env):
 		return [seed]
 
 	def _reset(self):
-		if self.physicsClientId < 0:
-			if self.isRender:
-				self.physicsClientId = p.connect(p.GUI)
-			else:
-				self.physicsClientId = p.connect(p.DIRECT)
+		if self.physicsClientId<0:
+			self.physicsClientId = p.connect(p.SHARED_MEMORY)
+			if self.physicsClientId<0:
+				if self.isRender:
+					self.physicsClientId = p.connect(p.GUI)
+				else:
+					self.physicsClientId = p.connect(p.DIRECT)
 		p.configureDebugVisualizer(p.COV_ENABLE_GUI,0)
 
 		if self.scene is None:
@@ -82,7 +84,7 @@ class MJCFBaseBulletEnv(gym.Env):
 		(_, _, px, _, _) = p.getCameraImage(
 		width=self._render_width, height=self._render_height, viewMatrix=view_matrix,
 			projectionMatrix=proj_matrix,
-			#renderer=p.ER_BULLET_HARDWARE_OPENGL
+			renderer=p.ER_BULLET_HARDWARE_OPENGL
 			)
 		rgb_array = np.array(px)
 		rgb_array = rgb_array[:, :, :3]
